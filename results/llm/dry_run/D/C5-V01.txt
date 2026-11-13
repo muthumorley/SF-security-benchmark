@@ -1,0 +1,104 @@
+SYSTEM:
+You are a Salesforce application security reviewer. You analyse Salesforce Apex code and, when provided, Salesforce metadata (permission sets, profiles) for security misconfigurations.
+
+Classify any issue you find into exactly one of these categories:
+- C1: SOQL/SOSL injection
+- C2: CRUD/FLS violations (object or field permissions not enforced)
+- C3: Sharing / security context (record-level sharing not enforced, e.g. "without sharing")
+- C4: Excessive permissions (permission set or profile grants more than its purpose needs)
+- C5: Guest user / Experience Cloud exposure (unauthenticated users can reach data or code they should not)
+- other: a real security issue outside C1-C5
+
+Severity scale:
+- High: data exposure, data modification or privilege escalation reachable by an external, guest or low-privilege user
+- Medium: authenticated internal users can see or change data beyond their permissions
+- Low: defence-in-depth weakness with limited direct impact
+
+If the code and configuration are secure, say so. Do not report style or performance issues.
+
+Respond with ONLY a JSON object, no prose before or after, in this exact shape:
+{
+  "vulnerable": true | false,
+  "findings": [
+    {
+      "category": "C1" | "C2" | "C3" | "C4" | "C5" | "other",
+      "title": "short name of the issue",
+      "severity": "High" | "Medium" | "Low",
+      "file": "file name",
+      "lines": "line numbers or element name",
+      "explanation": "why this is a security problem, in 1-3 sentences",
+      "remediation": "the specific Salesforce fix, in 1-3 sentences"
+    }
+  ]
+}
+If "vulnerable" is false, "findings" must be an empty list.
+
+
+USER:
+Salesforce security guidance (summarised from the Salesforce Secure Coding Guide, Apex Developer Guide, Metadata API documentation, OWASP and CWE):
+
+SOQL/SOSL injection (CWE-89): never concatenate user input into a dynamic query string. Use static SOQL with bind variables, Database.queryWithBinds, or String.escapeSingleQuotes. Values that cannot be bound (field names, ORDER BY) must come from an allow-list.
+
+CRUD/FLS (CWE-862): Apex runs in system mode and ignores object and field permissions by default. Enforce them with WITH USER_MODE in SOQL, "insert/update/delete as user" for DML, Security.stripInaccessible, or WITH SECURITY_ENFORCED for reads.
+
+Sharing (CWE-284): a class declared "without sharing" ignores record-level sharing. Classes reachable from @AuraEnabled, @RemoteAction, REST or Visualforce should be "with sharing" or "inherited sharing" (which runs as "with sharing" when it is the entry point). WITH USER_MODE also enforces sharing.
+
+Excessive permissions (CWE-250): permission sets and profiles should follow least privilege. Modify All Data, View All Data, Author Apex, Customize Application, Manage Users and API Enabled are powerful system permissions that should only be granted to administrators or integration users with a clear need. Compare the permissions granted with the stated purpose.
+
+Guest user exposure (CWE-306): a profile with "Guest User License" represents unauthenticated site visitors. Any Apex class in its classAccesses can be called by anyone on the internet through the site's Aura endpoint. Such classes must be "with sharing", enforce USER_MODE, return only data intended to be public, and guest object access should be limited to non-sensitive data.
+
+
+Analyse the following Salesforce files:
+
+--- FILE: ContactSearchController.cls ---
+public without sharing class ContactSearchController {
+    @AuraEnabled
+    public static List<Contact> findContacts(String lastName) {
+        return [
+            SELECT Id, Name, Email, Phone
+            FROM Contact
+            WHERE LastName = :lastName
+        ];
+    }
+}
+
+
+--- FILE: Partner Site Profile.profile-meta.xml ---
+<?xml version="1.0" encoding="UTF-8"?>
+<Profile xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>ContactSearchController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <custom>true</custom>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.Email</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.Phone</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Contact</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <userLicense>Guest User License</userLicense>
+</Profile>
+
+
+Before answering, work through these checks in order, using the code and configuration provided:
+1. Inputs: which values come from the caller? Do any reach a dynamic SOQL/SOSL string without binding or allow-listing?
+2. Object and field access: are CRUD and FLS enforced for every query and DML statement?
+3. Record access: what sharing mode does each class run in, and is it reachable from an external entry point?
+4. Permissions: does each permission set or profile grant only what its description says it is for?
+5. Exposure: is any profile a guest (unauthenticated) profile? What code and data can it reach?
+6. Combine: does any combination of code and configuration create an issue that neither shows alone?
+Then output only the JSON object.

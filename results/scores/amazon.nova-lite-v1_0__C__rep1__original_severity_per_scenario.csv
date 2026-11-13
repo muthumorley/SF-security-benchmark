@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,High,True,C1,High,TP,True,True,SOQL Injection
+C1-S01,secure,C1,None,False,,None,TN,,,
+C2-V01,vulnerable,C2,Medium,False,,None,FN,,,
+C2-S01,secure,C2,None,False,,None,TN,,,
+C3-V01,vulnerable,C3,High,False,,None,FN,,,
+C3-S01,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,True,C4,Medium,TP,True,False,Excessive permissions in permission set
+C4-S01,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,True,C3 C5,Medium,TP,True,False,Insecure sharing model in ContactSearchController; Guest user profile allows access to ContactSearchController
+C5-S01,secure,C5,None,False,,None,TN,,,

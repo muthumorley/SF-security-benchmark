@@ -1,0 +1,23 @@
+{
+  "scenario_id": "C2-V01",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "4-7",
+  "explanation": "Apex runs in system mode for CRUD/FLS: the query returns Email and Birthdate and the update writes Phone without checking field permissions. The permission set explicitly denies Birthdate, yet the method returns it to the caller.",
+  "expected_remediation": [
+    "Add WITH USER_MODE to the query and use 'update as user'",
+    "Or apply Security.stripInaccessible before returning and before DML"
+  ],
+  "sources": [
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "Secure Coding Guide - CRUD and FLS",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/ContactPhoneService.cls",
+    "permissionsets/Contact_Phone_Editor.permissionset-meta.xml"
+  ]
+}

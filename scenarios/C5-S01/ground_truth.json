@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C5-S01",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: guest users can call an @AuraEnabled method, but this is an intended public catalogue. The class is 'with sharing', the query uses USER_MODE, and only non-sensitive Product2 fields are read; guest has no access to customer data.",
+  "expected_remediation": [],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/PublicCatalogController.cls",
+    "profiles/Catalog Site Profile.profile-meta.xml"
+  ]
+}

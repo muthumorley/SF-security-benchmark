@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,High,True,C1,Medium,TP,True,False,SOQL Injection via unescaped searchKey
+C1-S01,secure,C1,None,False,,None,TN,,,
+C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,Field-Level Security Violation in Contact Query
+C2-S01,secure,C2,None,False,,None,TN,,,
+C3-V01,vulnerable,C3,High,True,C3,Medium,TP,True,False,Record-level sharing bypass
+C3-S01,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive System Permissions
+C4-S01,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,True,C2 C3 C5,High,TP,True,True,Guest User Exposure via AuraEnabled Class; Sharing Rules Ignored in Guest Context; Field‑Level Security Not Enforced
+C5-S01,secure,C5,None,False,,None,TN,,,

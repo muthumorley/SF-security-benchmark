@@ -1,0 +1,24 @@
+{
+  "scenario_id": "C5-V01",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "1-8 + guest profile classAccesses",
+  "explanation": "The guest (unauthenticated) site profile can execute an @AuraEnabled method in a 'without sharing' class that returns Contact Email and Phone. Any anonymous visitor can call the Aura endpoint and enumerate contacts by last name.",
+  "expected_remediation": [
+    "Remove ContactSearchController from the guest profile",
+    "Use 'with sharing' and WITH USER_MODE",
+    "Remove guest read access to Contact unless required"
+  ],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "DIVD-2026-00005",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/ContactSearchController.cls",
+    "profiles/Partner Site Profile.profile-meta.xml"
+  ]
+}

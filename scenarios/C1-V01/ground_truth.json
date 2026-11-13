@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C1-V01",
+  "category": "C1",
+  "category_name": "SOQL/SOSL injection",
+  "difficulty": "easy",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "4-6",
+  "explanation": "User-controlled searchKey is concatenated into a dynamic SOQL string. An attacker can close the quote and alter the WHERE clause (e.g. to remove the filter or probe other fields). USER_MODE limits data to what the user may see but does not stop query manipulation.",
+  "expected_remediation": [
+    "Use a bind variable (Database.queryWithBinds or a static query with :searchKey)",
+    "Or escape input with String.escapeSingleQuotes before concatenation"
+  ],
+  "sources": [
+    "Apex Developer Guide - SOQL Injection",
+    "Trailhead - Secure Server-Side Development: Mitigate SOQL Injection",
+    "CWE-89"
+  ],
+  "files": [
+    "classes/AccountSearchController.cls",
+    "permissionsets/Account_Search_User.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): injectable, but reachable only by authenticated internal users and partly contained by USER_MODE and with sharing - the attacker can alter the query but cannot read records or fields beyond their own access. Medium = real flaw limited by another control."
+}

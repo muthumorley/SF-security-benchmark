@@ -1,0 +1,37 @@
+{
+  "name": "anthropic.claude-sonnet-4-5-20250929-v1_0__C__rep1",
+  "TP": 0,
+  "FP": 0,
+  "FN": 5,
+  "TN": 5,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "accuracy": 0.5,
+  "category_accuracy_on_TP": null,
+  "severity_accuracy_on_TP": null,
+  "per_category": {
+    "C1": {
+      "FN": 1,
+      "TN": 1
+    },
+    "C2": {
+      "FN": 1,
+      "TN": 1
+    },
+    "C3": {
+      "FN": 1,
+      "TN": 1
+    },
+    "C4": {
+      "FN": 1,
+      "TN": 1
+    },
+    "C5": {
+      "FN": 1,
+      "TN": 1
+    }
+  },
+  "outputs_repaired": null,
+  "outputs_invalid": null
+}

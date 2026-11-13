@@ -1,0 +1,6 @@
+{
+  "packageDirectories": [{ "path": "scenarios", "default": true }],
+  "name": "sf-security-benchmark",
+  "namespace": "",
+  "sourceApiVersion": "62.0"
+}

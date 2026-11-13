@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C2-S01",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Secure: the query uses WITH USER_MODE and the DML uses 'update as user', so object permissions, FLS and sharing are all enforced for the running user.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/OpportunityStageService.cls",
+    "permissionsets/Opportunity_Stage_Editor.permissionset-meta.xml"
+  ]
+}

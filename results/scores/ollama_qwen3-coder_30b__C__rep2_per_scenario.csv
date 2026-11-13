@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,SOQL injection vulnerability
+C1-S01,secure,C1,None,False,,None,TN,,,
+C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,CRUD/FLS violations
+C2-S01,secure,C2,None,True,C2,High,FP,,,CRUD/FLS violation in OpportunityStageService
+C3-V01,vulnerable,C3,High,True,C2 C3,High,TP,True,True,Missing sharing enforcement; Missing CRUD/FLS enforcement
+C3-S01,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive permissions in Support Agent Tools permission set
+C4-S01,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,True,C2 C3 C5,High,TP,True,True,Missing sharing enforcement; Guest user exposure; FLS violation in field permissions
+C5-S01,secure,C5,None,True,C5,High,FP,,,Guest user exposure via public API endpoint

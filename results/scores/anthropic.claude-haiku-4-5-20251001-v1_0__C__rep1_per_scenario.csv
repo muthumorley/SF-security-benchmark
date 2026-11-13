@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,High,False,,None,FN,,,no output
+C1-S01,secure,C1,None,False,,None,TN,,,no output
+C2-V01,vulnerable,C2,Medium,False,,None,FN,,,no output
+C2-S01,secure,C2,None,False,,None,TN,,,no output
+C3-V01,vulnerable,C3,High,False,,None,FN,,,no output
+C3-S01,secure,C3,None,False,,None,TN,,,no output
+C4-V01,vulnerable,C4,High,False,,None,FN,,,no output
+C4-S01,secure,C4,None,False,,None,TN,,,no output
+C5-V01,vulnerable,C5,High,False,,None,FN,,,no output
+C5-S01,secure,C5,None,False,,None,TN,,,no output

@@ -1,0 +1,8 @@
+Before answering, work through these checks in order, using the code and configuration provided:
+1. Inputs: which values come from the caller? Do any reach a dynamic SOQL/SOSL string without binding or allow-listing?
+2. Object and field access: are CRUD and FLS enforced for every query and DML statement?
+3. Record access: what sharing mode does each class run in, and is it reachable from an external entry point?
+4. Permissions: does each permission set or profile grant only what its description says it is for?
+5. Exposure: is any profile a guest (unauthenticated) profile? What code and data can it reach?
+6. Combine: does any combination of code and configuration create an issue that neither shows alone?
+Then output only the JSON object.

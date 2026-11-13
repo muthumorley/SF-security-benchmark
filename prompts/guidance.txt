@@ -1,0 +1,11 @@
+Salesforce security guidance (summarised from the Salesforce Secure Coding Guide, Apex Developer Guide, Metadata API documentation, OWASP and CWE):
+
+SOQL/SOSL injection (CWE-89): never concatenate user input into a dynamic query string. Use static SOQL with bind variables, Database.queryWithBinds, or String.escapeSingleQuotes. Values that cannot be bound (field names, ORDER BY) must come from an allow-list.
+
+CRUD/FLS (CWE-862): Apex runs in system mode and ignores object and field permissions by default. Enforce them with WITH USER_MODE in SOQL, "insert/update/delete as user" for DML, Security.stripInaccessible, or WITH SECURITY_ENFORCED for reads.
+
+Sharing (CWE-284): a class declared "without sharing" ignores record-level sharing. Classes reachable from @AuraEnabled, @RemoteAction, REST or Visualforce should be "with sharing" or "inherited sharing" (which runs as "with sharing" when it is the entry point). WITH USER_MODE also enforces sharing.
+
+Excessive permissions (CWE-250): permission sets and profiles should follow least privilege. Modify All Data, View All Data, Author Apex, Customize Application, Manage Users and API Enabled are powerful system permissions that should only be granted to administrators or integration users with a clear need. Compare the permissions granted with the stated purpose.
+
+Guest user exposure (CWE-306): a profile with "Guest User License" represents unauthenticated site visitors. Any Apex class in its classAccesses can be called by anyone on the internet through the site's Aura endpoint. Such classes must be "with sharing", enforce USER_MODE, return only data intended to be public, and guest object access should be limited to non-sensitive data.

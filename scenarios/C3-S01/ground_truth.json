@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C3-S01",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "hard",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: 'inherited sharing' on a class used as an @AuraEnabled entry point runs as 'with sharing', so record sharing is enforced. WITH SECURITY_ENFORCED enforces CRUD/FLS for the read.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/MyAccountsController.cls",
+    "permissionsets/My_Accounts_Viewer.permissionset-meta.xml"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "ollama_gpt-oss_20b__E__rep1",
+  "TP": 5,
+  "FP": 0,
+  "FN": 0,
+  "TN": 5,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "accuracy": 1.0,
+  "category_accuracy_on_TP": 1.0,
+  "severity_accuracy_on_TP": 0.8,
+  "per_category": {
+    "C1": {
+      "TP": 1,
+      "TN": 1
+    },
+    "C2": {
+      "TP": 1,
+      "TN": 1
+    },
+    "C3": {
+      "TP": 1,
+      "TN": 1
+    },
+    "C4": {
+      "TP": 1,
+      "TN": 1
+    },
+    "C5": {
+      "TP": 1,
+      "TN": 1
+    }
+  },
+  "outputs_repaired": 0,
+  "outputs_invalid": 0
+}

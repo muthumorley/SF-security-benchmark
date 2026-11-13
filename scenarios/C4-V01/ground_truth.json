@@ -1,0 +1,23 @@
+{
+  "scenario_id": "C4-V01",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "permission set userPermissions",
+  "explanation": "The Apex is secure, but the permission set meant for tier-1 agents grants Modify All Data, View All Data, Author Apex and API Enabled. Any agent can read and change every record in the org and deploy code, far beyond 'view and close cases'.",
+  "expected_remediation": [
+    "Remove ModifyAllData, ViewAllData, AuthorApex and ApiEnabled from the permission set",
+    "Grant only Case read/edit and class access (least privilege)"
+  ],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "Salesforce Help - Security Health Check / least privilege",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/SupportCaseHelper.cls",
+    "permissionsets/Support_Agent_Tools.permissionset-meta.xml"
+  ]
+}

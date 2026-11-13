@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,SOQL injection in account search
+C1-S01,secure,C1,None,False,,None,TN,,,[INVALID] 
+C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,Field-level security bypass in Contact query and return
+C2-S01,secure,C2,None,True,C4,Low,FP,,,Excessive field permission for Amount field
+C3-V01,vulnerable,C3,High,True,C3,High,TP,True,True,Record-level sharing bypassed in AuraEnabled method
+C3-S01,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive system permissions granted to support agents
+C4-S01,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,True,C2 C3 C5,High,TP,True,True,Guest user can access all Contact records without sharing or permission enforcement; AuraEnabled method ignores record-level sharing; CRUD and FLS not enforced in guest-accessible query
+C5-S01,secure,C5,None,False,,None,TN,,,

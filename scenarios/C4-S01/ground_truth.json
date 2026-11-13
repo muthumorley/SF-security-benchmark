@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C4-S01",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the permission set includes Export Reports, which can look risky, but it matches the stated purpose (SDRs running pipeline reports) and grants no org-wide data or admin permissions. Object access is limited to Lead read/edit.",
+  "expected_remediation": [],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/LeadQualifierService.cls",
+    "permissionsets/Lead_Qualifier.permissionset-meta.xml"
+  ]
+}

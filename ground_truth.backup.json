@@ -1,0 +1,213 @@
+[
+  {
+    "scenario_id": "C1-V01",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "easy",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "4-6",
+    "explanation": "User-controlled searchKey is concatenated into a dynamic SOQL string. An attacker can close the quote and alter the WHERE clause (e.g. to remove the filter or probe other fields). USER_MODE limits data to what the user may see but does not stop query manipulation.",
+    "expected_remediation": [
+      "Use a bind variable (Database.queryWithBinds or a static query with :searchKey)",
+      "Or escape input with String.escapeSingleQuotes before concatenation"
+    ],
+    "sources": [
+      "Apex Developer Guide - SOQL Injection",
+      "Trailhead - Secure Server-Side Development: Mitigate SOQL Injection",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/AccountSearchController.cls",
+      "permissionsets/Account_Search_User.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C1-S01",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the query is built dynamically, but user input lastName is passed as a bind variable via queryWithBinds, and the only concatenated value (orderBy) is restricted to an allow-list. USER_MODE enforces CRUD, FLS and sharing.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - SOQL Injection",
+      "Apex Developer Guide - Database.queryWithBinds",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/ContactLookupController.cls",
+      "permissionsets/Contact_Lookup_User.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C2-V01",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "4-7",
+    "explanation": "Apex runs in system mode for CRUD/FLS: the query returns Email and Birthdate and the update writes Phone without checking field permissions. The permission set explicitly denies Birthdate, yet the method returns it to the caller.",
+    "expected_remediation": [
+      "Add WITH USER_MODE to the query and use 'update as user'",
+      "Or apply Security.stripInaccessible before returning and before DML"
+    ],
+    "sources": [
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "Secure Coding Guide - CRUD and FLS",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/ContactPhoneService.cls",
+      "permissionsets/Contact_Phone_Editor.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C2-S01",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Secure: the query uses WITH USER_MODE and the DML uses 'update as user', so object permissions, FLS and sharing are all enforced for the running user.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/OpportunityStageService.cls",
+      "permissionsets/Opportunity_Stage_Editor.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C3-V01",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "1, 7-12",
+    "explanation": "CRUD and FLS are checked, but the class is 'without sharing', so the query ignores record-level sharing and returns the latest 200 cases org-wide, including other customers' cases, to partner users who should only see their own.",
+    "expected_remediation": [
+      "Declare the class 'with sharing' (or inherited sharing for an entry point)",
+      "Or use WITH USER_MODE, which also enforces sharing"
+    ],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/CaseHistoryController.cls",
+      "permissionsets/Case_History_Viewer.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C3-S01",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "hard",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: 'inherited sharing' on a class used as an @AuraEnabled entry point runs as 'with sharing', so record sharing is enforced. WITH SECURITY_ENFORCED enforces CRUD/FLS for the read.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/MyAccountsController.cls",
+      "permissionsets/My_Accounts_Viewer.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C4-V01",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "permission set userPermissions",
+    "explanation": "The Apex is secure, but the permission set meant for tier-1 agents grants Modify All Data, View All Data, Author Apex and API Enabled. Any agent can read and change every record in the org and deploy code, far beyond 'view and close cases'.",
+    "expected_remediation": [
+      "Remove ModifyAllData, ViewAllData, AuthorApex and ApiEnabled from the permission set",
+      "Grant only Case read/edit and class access (least privilege)"
+    ],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "Salesforce Help - Security Health Check / least privilege",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/SupportCaseHelper.cls",
+      "permissionsets/Support_Agent_Tools.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C4-S01",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the permission set includes Export Reports, which can look risky, but it matches the stated purpose (SDRs running pipeline reports) and grants no org-wide data or admin permissions. Object access is limited to Lead read/edit.",
+    "expected_remediation": [],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/LeadQualifierService.cls",
+      "permissionsets/Lead_Qualifier.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C5-V01",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "1-8 + guest profile classAccesses",
+    "explanation": "The guest (unauthenticated) site profile can execute an @AuraEnabled method in a 'without sharing' class that returns Contact Email and Phone. Any anonymous visitor can call the Aura endpoint and enumerate contacts by last name.",
+    "expected_remediation": [
+      "Remove ContactSearchController from the guest profile",
+      "Use 'with sharing' and WITH USER_MODE",
+      "Remove guest read access to Contact unless required"
+    ],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "DIVD-2026-00005",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/ContactSearchController.cls",
+      "profiles/Partner Site Profile.profile-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C5-S01",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: guest users can call an @AuraEnabled method, but this is an intended public catalogue. The class is 'with sharing', the query uses USER_MODE, and only non-sensitive Product2 fields are read; guest has no access to customer data.",
+    "expected_remediation": [],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/PublicCatalogController.cls",
+      "profiles/Catalog Site Profile.profile-meta.xml"
+    ]
+  }
+]

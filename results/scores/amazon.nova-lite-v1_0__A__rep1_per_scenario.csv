@@ -1,0 +1,11 @@
+scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
+C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,SOQL Injection
+C1-S01,secure,C1,None,False,,None,TN,,,
+C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,CRUD/FLS violations
+C2-S01,secure,C2,None,True,C2,Medium,FP,,,CRUD/FLS violations
+C3-V01,vulnerable,C3,High,False,,None,FN,,,
+C3-S01,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,False,,None,FN,,,
+C4-S01,secure,C4,None,True,C2,Medium,FP,,,FLS not enforced
+C5-V01,vulnerable,C5,High,True,C1,High,TP,False,True,SOQL Injection
+C5-S01,secure,C5,None,False,,None,TN,,,

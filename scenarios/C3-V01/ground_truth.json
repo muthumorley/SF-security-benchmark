@@ -1,0 +1,22 @@
+{
+  "scenario_id": "C3-V01",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "1, 7-12",
+  "explanation": "CRUD and FLS are checked, but the class is 'without sharing', so the query ignores record-level sharing and returns the latest 200 cases org-wide, including other customers' cases, to partner users who should only see their own.",
+  "expected_remediation": [
+    "Declare the class 'with sharing' (or inherited sharing for an entry point)",
+    "Or use WITH USER_MODE, which also enforces sharing"
+  ],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/CaseHistoryController.cls",
+    "permissionsets/Case_History_Viewer.permissionset-meta.xml"
+  ]
+}
