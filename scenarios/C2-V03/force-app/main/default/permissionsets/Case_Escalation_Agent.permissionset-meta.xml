@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>CaseEscalationService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Allows tier-2 support agents to escalate cases. Task creation permission is intentionally not granted.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Case Escalation Agent</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Case</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>

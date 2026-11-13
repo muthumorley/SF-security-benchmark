@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C2-S03",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Secure: before performing any DML, the class explicitly checks Schema.sObjectType.Asset.isDeletable() and throws an AuraHandledException if the running user lacks delete permission. The SOQL query uses WITH USER_MODE to enforce FLS and sharing on the read. The class runs with sharing for record-level scoping. All three enforcement layers (CRUD, FLS, sharing) are correctly applied.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "Secure Coding Guide - CRUD and FLS",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/AssetRetirementService.cls",
+    "permissionsets/Asset_Retirement_Manager.permissionset-meta.xml"
+  ]
+}

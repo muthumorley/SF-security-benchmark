@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C3-S03",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "hard",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the class is 'without sharing', which immediately raises a flag. However, this is an internal service class with no @AuraEnabled methods and no way for a user to invoke it directly. The class doc and permission set both confirm it is called only from a scheduled admin batch job, where system-context access to all records is a valid and intended requirement. 'without sharing' is justified here — the question is whether this class is reachable by unprivileged users, and it is not.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "Salesforce Help - Apex Security and Sharing",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/AdminDataService.cls",
+    "permissionsets/Batch_Sync_Admin.permissionset-meta.xml"
+  ]
+}

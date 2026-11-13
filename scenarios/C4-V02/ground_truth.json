@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C4-V02",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "permission set userPermissions",
+  "explanation": "The Apex code is correct and properly enforces FLS and sharing. The vulnerability is entirely in the permission set: it grants ManageInternalUsers to accounts payable clerks whose job is only to review and approve invoices. ManageInternalUsers allows creating, editing and deactivating internal Salesforce users — an administrative capability completely unrelated to invoice approval. Any clerk assigned this permission set gains privileged user management access.",
+  "expected_remediation": [
+    "Remove the ManageInternalUsers userPermission from the permission set",
+    "Grant only the minimum permissions needed: Invoice__c read/edit and class access"
+  ],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "Salesforce Help - Security Health Check / least privilege",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/InvoiceApprovalController.cls",
+    "permissionsets/Accounts_Payable_Clerk.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): ManageInternalUsers grants full user administration to a non-admin role. High = escalation path to user account takeover or privilege escalation across the org."
+}

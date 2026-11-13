@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C1-V03",
+  "category": "C1",
+  "category_name": "SOQL/SOSL injection",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "8-14",
+  "explanation": "The method builds a dynamic SOQL WHERE clause by joining user-supplied filter strings verbatim (lines 8-14). Although the class is 'with sharing' and uses USER_MODE (which enforces FLS and sharing), neither prevents SOQL injection: an attacker can supply a filter string like \"StageName = 'x' OR 1=1\" to remove all filters, or inject subqueries. The superficially secure USER_MODE call is a distractor — it does not sanitise the WHERE clause structure.",
+  "expected_remediation": [
+    "Validate every field name against an allow-list of permitted Opportunity fields before concatenation",
+    "Extract values from the filter tokens and pass them as bind variables via Database.queryWithBinds rather than concatenating them directly"
+  ],
+  "sources": [
+    "Apex Developer Guide - SOQL Injection",
+    "Apex Developer Guide - Database.queryWithBinds",
+    "CWE-89"
+  ],
+  "files": [
+    "classes/ReportFilterController.cls",
+    "permissionsets/Report_Filter_User.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): Full SOQL injection in WHERE clause construction. with sharing and USER_MODE reduce data exposure but do not prevent query manipulation. Medium = real flaw limited by sharing and FLS enforcement."
+}

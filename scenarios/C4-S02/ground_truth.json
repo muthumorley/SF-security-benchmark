@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C4-S02",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the permission set grants RunReports and ExportReport, which can look alarming because analysts could export report data. However, these permissions only allow running and exporting reports the user already has access to — they do not grant access to data beyond what sharing and object permissions allow. There is no ViewAllData, ModifyAllData, or other system-wide permission. The object permissions are limited to Order read-only. This is a correctly scoped, least-privilege billing analyst setup.",
+  "expected_remediation": [],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "Salesforce Help - Security Health Check / least privilege",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/BillingReportController.cls",
+    "permissionsets/Billing_Analyst.permissionset-meta.xml"
+  ]
+}

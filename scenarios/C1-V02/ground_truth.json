@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C1-V02",
+  "category": "C1",
+  "category_name": "SOQL/SOSL injection",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "5-6",
+  "explanation": "User-controlled invoiceNum is concatenated into the SOSL search string ('Invoice-' + invoiceNum). An attacker can close the prefix and inject SOSL metacharacters (e.g. ' OR Name LIKE '%') to widen the search scope or enumerate unexpected records. The class runs with sharing, which limits results to the user's accessible records, but does not prevent the query structure from being manipulated.",
+  "expected_remediation": [
+    "Assign the search term to a local variable and use it as a bind variable: String term = 'Invoice-' + invoiceNum; List<List<SObject>> results = [FIND :term IN ALL FIELDS RETURNING Invoice__c(...)]",
+    "Or sanitise with String.escapeSingleQuotes and validate that invoiceNum contains only expected characters before concatenation"
+  ],
+  "sources": [
+    "Apex Developer Guide - SOSL Injection",
+    "Trailhead - Secure Server-Side Development: Mitigate SOQL Injection",
+    "CWE-89"
+  ],
+  "files": [
+    "classes/InvoiceSearchController.cls",
+    "permissionsets/Invoice_Search_User.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): SOSL injectable, but class runs with sharing, limiting results to records the user already has access to. Medium = real flaw partially contained by sharing enforcement."
+}

@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C4-S03",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the permission set grants ApiEnabled, which allows API access to Salesforce. This can look like a broad system permission. However, ApiEnabled alone only allows the user to authenticate via the Salesforce API — it does not grant access to any additional data or records beyond what the user's object permissions and sharing rules already permit. The permission set is scoped to Order read/write only, with no system-wide permissions. This is a correct, least-privilege integration user configuration.",
+  "expected_remediation": [],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "Salesforce Help - Security Health Check / least privilege",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/IntegrationApiService.cls",
+    "permissionsets/Integration_Api_User.permissionset-meta.xml"
+  ]
+}

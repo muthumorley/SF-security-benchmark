@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C5-V02",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "guest profile objectPermissions (Case)",
+  "explanation": "The KnowledgeSearchController itself is well-written: it uses 'with sharing', WITH USER_MODE, and escapeSingleQuotes. However, the guest profile grants read access to the Case object alongside KnowledgeArticleVersion. Case records contain potentially sensitive customer support data. Any unauthenticated visitor can read Cases through any existing or future Apex endpoint that queries them, or through the Salesforce REST API if guest API access is enabled. The controller code is not the problem — the misconfigured profile is.",
+  "expected_remediation": [
+    "Remove Case read access from the guest profile",
+    "Audit all objects in the guest profile and remove any that are not required by the site's intended public functionality"
+  ],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "Salesforce Help - Control Which Users Experience Cloud Site Guest Users Can Access",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/KnowledgeSearchController.cls",
+    "profiles/Help Centre Guest Profile.profile-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): Guest profile grants Case read to unauthenticated users. High = customer support records accessible to anonymous visitors without any authentication."
+}

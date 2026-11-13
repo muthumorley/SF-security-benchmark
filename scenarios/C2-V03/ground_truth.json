@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C2-V03",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "11-17",
+  "explanation": "The Case update correctly uses WITH USER_MODE and 'update as user'. However, the Task insert (lines 11-17) runs in system mode without checking Schema.sObjectType.Task.isCreateable(). The permission set does not grant Task create access, so this is a CRUD violation. The silent catch block swallows the DmlException, masking the error and making the flaw easy to overlook during review. The superficially correct handling of the Case DML is a distractor.",
+  "expected_remediation": [
+    "Replace 'insert t' with 'insert as user t', or check Schema.sObjectType.Task.isCreateable() and throw an AuraHandledException if false",
+    "Remove the silent catch block so violations surface to the caller"
+  ],
+  "sources": [
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "Secure Coding Guide - CRUD and FLS",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/CaseEscalationService.cls",
+    "permissionsets/Case_Escalation_Agent.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): CRUD bypass on Task insert with silent exception swallowing. The Case operation is correctly protected. Medium = isolated create violation contained to the user's own scope."
+}

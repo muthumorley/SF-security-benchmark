@@ -1,0 +1,24 @@
+{
+  "scenario_id": "C3-V02",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "1, 5-7",
+  "explanation": "The class is declared 'without sharing', so the query ignores Salesforce record-level sharing rules entirely. Although WITH USER_MODE enforces FLS and CRUD, it does not enforce sharing. Partner community users who call this @AuraEnabled method will receive Opportunity records from all accounts in the org, not just those shared with them. The WITH USER_MODE on line 7 is a distractor — it does not substitute for 'with sharing'.",
+  "expected_remediation": [
+    "Change 'without sharing' to 'with sharing' (or 'inherited sharing' if this is called by a with-sharing entry point)",
+    "Or replace WITH USER_MODE with no sharing override — with sharing on the class declaration is the correct control"
+  ],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/FinancialDashboardController.cls",
+    "permissionsets/Financial_Dashboard_Viewer.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): Sharing rules bypassed at an @AuraEnabled partner-facing entry point. FLS is enforced (WITH USER_MODE) but record isolation is not. High = cross-tenant data leakage risk in a community context."
+}

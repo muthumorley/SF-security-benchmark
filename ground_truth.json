@@ -45,6 +45,96 @@
     ]
   },
   {
+    "scenario_id": "C1-V02",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "5-6",
+    "explanation": "User-controlled invoiceNum is concatenated into the SOSL search string ('Invoice-' + invoiceNum). An attacker can close the prefix and inject SOSL metacharacters (e.g. ' OR Name LIKE '%') to widen the search scope or enumerate unexpected records. The class runs with sharing, which limits results to the user's accessible records, but does not prevent the query structure from being manipulated.",
+    "expected_remediation": [
+      "Assign the search term to a local variable and use it as a bind variable: String term = 'Invoice-' + invoiceNum; List<List<SObject>> results = [FIND :term IN ALL FIELDS RETURNING Invoice__c(...)]",
+      "Or sanitise with String.escapeSingleQuotes and validate that invoiceNum contains only expected characters before concatenation"
+    ],
+    "sources": [
+      "Apex Developer Guide - SOSL Injection",
+      "Trailhead - Secure Server-Side Development: Mitigate SOQL Injection",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/InvoiceSearchController.cls",
+      "permissionsets/Invoice_Search_User.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): SOSL injectable, but class runs with sharing, limiting results to records the user already has access to. Medium = real flaw partially contained by sharing enforcement."
+  },
+  {
+    "scenario_id": "C1-V03",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "8-14",
+    "explanation": "The method builds a dynamic SOQL WHERE clause by joining user-supplied filter strings verbatim (lines 8-14). Although the class is 'with sharing' and uses USER_MODE (which enforces FLS and sharing), neither prevents SOQL injection: an attacker can supply a filter string like \"StageName = 'x' OR 1=1\" to remove all filters, or inject subqueries. The superficially secure USER_MODE call is a distractor — it does not sanitise the WHERE clause structure.",
+    "expected_remediation": [
+      "Validate every field name against an allow-list of permitted Opportunity fields before concatenation",
+      "Extract values from the filter tokens and pass them as bind variables via Database.queryWithBinds rather than concatenating them directly"
+    ],
+    "sources": [
+      "Apex Developer Guide - SOQL Injection",
+      "Apex Developer Guide - Database.queryWithBinds",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/ReportFilterController.cls",
+      "permissionsets/Report_Filter_User.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): Full SOQL injection in WHERE clause construction. with sharing and USER_MODE reduce data exposure but do not prevent query manipulation. Medium = real flaw limited by sharing and FLS enforcement."
+  },
+  {
+    "scenario_id": "C1-S02",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the query is built dynamically and an ORDER BY clause is concatenated from user input, which looks dangerous. However, sortField is validated against a strict allow-list (ALLOWED_SORT_FIELDS) before concatenation, and the nameFilter value is passed as a bind variable via queryWithBinds rather than concatenated. USER_MODE enforces CRUD, FLS and sharing. No injection path exists.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - SOQL Injection",
+      "Apex Developer Guide - Database.queryWithBinds",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/ProductSearchController.cls",
+      "permissionsets/Product_Search_User.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C1-S03",
+    "category": "C1",
+    "category_name": "SOQL/SOSL injection",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the query is built by string concatenation and the value is embedded in a quoted LIKE clause, which looks injection-prone. However, String.escapeSingleQuotes() is applied before concatenation, neutralising any quote-based injection attempts. WITH USER_MODE enforces CRUD, FLS and sharing. This is not the preferred pattern (bind variables are recommended), but it is correctly mitigated.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - SOQL Injection",
+      "Apex Developer Guide - String.escapeSingleQuotes",
+      "CWE-89"
+    ],
+    "files": [
+      "classes/TaskSearchController.cls",
+      "permissionsets/Task_Search_User.permissionset-meta.xml"
+    ]
+  },
+  {
     "scenario_id": "C2-V01",
     "category": "C2",
     "category_name": "CRUD/FLS violations",
@@ -87,6 +177,97 @@
     ]
   },
   {
+    "scenario_id": "C2-V02",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "4-9",
+    "explanation": "The query runs in system mode (no WITH USER_MODE) and reads AnnualRevenue, a field explicitly hidden from this permission set. The subsequent update runs without USER_MODE or 'update as user', so Rating is written without checking field-level edit permission. Any user with this permission set can trigger the class and implicitly read AnnualRevenue (used as the decision signal) and write Rating — both bypassing FLS.",
+    "expected_remediation": [
+      "Add WITH USER_MODE to the SOQL query so FLS is enforced on AnnualRevenue",
+      "Replace 'update acc' with 'update as user acc' to enforce field edit permissions",
+      "Or apply Security.stripInaccessible(AccessType.READABLE, ...) before reading and Security.stripInaccessible(AccessType.UPDATABLE, ...) before DML"
+    ],
+    "sources": [
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "Secure Coding Guide - CRUD and FLS",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/AccountRatingService.cls",
+      "permissionsets/Account_Rating_Editor.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): FLS bypassed on both read (AnnualRevenue) and write (Rating). Class runs with sharing, so record scope is limited. Medium = data-access violation within the user's own record set."
+  },
+  {
+    "scenario_id": "C2-V03",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "11-17",
+    "explanation": "The Case update correctly uses WITH USER_MODE and 'update as user'. However, the Task insert (lines 11-17) runs in system mode without checking Schema.sObjectType.Task.isCreateable(). The permission set does not grant Task create access, so this is a CRUD violation. The silent catch block swallows the DmlException, masking the error and making the flaw easy to overlook during review. The superficially correct handling of the Case DML is a distractor.",
+    "expected_remediation": [
+      "Replace 'insert t' with 'insert as user t', or check Schema.sObjectType.Task.isCreateable() and throw an AuraHandledException if false",
+      "Remove the silent catch block so violations surface to the caller"
+    ],
+    "sources": [
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "Secure Coding Guide - CRUD and FLS",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/CaseEscalationService.cls",
+      "permissionsets/Case_Escalation_Agent.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): CRUD bypass on Task insert with silent exception swallowing. The Case operation is correctly protected. Medium = isolated create violation contained to the user's own scope."
+  },
+  {
+    "scenario_id": "C2-S02",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the query fetches Legal_Notes__c, a sensitive custom field restricted from most users. This looks like a FLS violation. However, Security.stripInaccessible(AccessType.READABLE, records) is applied before the records are returned, removing any fields the running user cannot read (including Legal_Notes__c). The DML uses 'update as user', enforcing field edit permissions. With sharing ensures record-level scoping.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Security.stripInaccessible",
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/ContractAmendmentService.cls",
+      "permissionsets/Contract_Amendment_Editor.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C2-S03",
+    "category": "C2",
+    "category_name": "CRUD/FLS violations",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Secure: before performing any DML, the class explicitly checks Schema.sObjectType.Asset.isDeletable() and throws an AuraHandledException if the running user lacks delete permission. The SOQL query uses WITH USER_MODE to enforce FLS and sharing on the read. The class runs with sharing for record-level scoping. All three enforcement layers (CRUD, FLS, sharing) are correctly applied.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Enforce User Mode for Database Operations",
+      "Secure Coding Guide - CRUD and FLS",
+      "CWE-862"
+    ],
+    "files": [
+      "classes/AssetRetirementService.cls",
+      "permissionsets/Asset_Retirement_Manager.permissionset-meta.xml"
+    ]
+  },
+  {
     "scenario_id": "C3-V01",
     "category": "C3",
     "category_name": "Sharing / security context",
@@ -125,6 +306,93 @@
     "files": [
       "classes/MyAccountsController.cls",
       "permissionsets/My_Accounts_Viewer.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C3-V02",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "1, 5-7",
+    "explanation": "The class is declared 'without sharing', so the query ignores Salesforce record-level sharing rules entirely. Although WITH USER_MODE enforces FLS and CRUD, it does not enforce sharing. Partner community users who call this @AuraEnabled method will receive Opportunity records from all accounts in the org, not just those shared with them. The WITH USER_MODE on line 7 is a distractor — it does not substitute for 'with sharing'.",
+    "expected_remediation": [
+      "Change 'without sharing' to 'with sharing' (or 'inherited sharing' if this is called by a with-sharing entry point)",
+      "Or replace WITH USER_MODE with no sharing override — with sharing on the class declaration is the correct control"
+    ],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/FinancialDashboardController.cls",
+      "permissionsets/Financial_Dashboard_Viewer.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): Sharing rules bypassed at an @AuraEnabled partner-facing entry point. FLS is enforced (WITH USER_MODE) but record isolation is not. High = cross-tenant data leakage risk in a community context."
+  },
+  {
+    "scenario_id": "C3-V03",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "1, 8-11",
+    "explanation": "The @AuraEnabled entry point getLeadSummary() lives on the outer class DataAggregator, which is declared 'without sharing'. The inner class SharedHelper is declared 'with sharing', which makes it appear that sharing is enforced. However, the entry point method never calls SharedHelper — it executes its own query directly in DataAggregator's context, which is 'without sharing'. The inner class's sharing keyword is irrelevant here. All leads org-wide are returned, bypassing record sharing.",
+    "expected_remediation": [
+      "Change DataAggregator from 'without sharing' to 'with sharing' or 'inherited sharing'",
+      "Or delegate the query to SharedHelper.getMyLeads() so the with-sharing context is actually used"
+    ],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/DataAggregator.cls",
+      "permissionsets/Lead_Summary_Viewer.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): Sharing bypassed at AuraEnabled entry point. The with-sharing inner class is a red herring — the entry-point method does not use it. High = all Lead records accessible regardless of sharing rules."
+  },
+  {
+    "scenario_id": "C3-S02",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "hard",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the class uses 'inherited sharing', which looks like it might not enforce sharing rules. However, when an 'inherited sharing' class is called as an @AuraEnabled entry point from an LWC, Salesforce treats it as 'with sharing' because there is no outer caller to inherit from — the implicit default is enforced sharing. Additionally, WITH USER_MODE enforces CRUD and FLS. This is a correct and recommended pattern for reusable service classes.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/AccountManagerView.cls",
+      "permissionsets/Account_Manager_Viewer.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C3-S03",
+    "category": "C3",
+    "category_name": "Sharing / security context",
+    "difficulty": "hard",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the class is 'without sharing', which immediately raises a flag. However, this is an internal service class with no @AuraEnabled methods and no way for a user to invoke it directly. The class doc and permission set both confirm it is called only from a scheduled admin batch job, where system-context access to all records is a valid and intended requirement. 'without sharing' is justified here — the question is whether this class is reachable by unprivileged users, and it is not.",
+    "expected_remediation": [],
+    "sources": [
+      "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+      "Salesforce Help - Apex Security and Sharing",
+      "CWE-284"
+    ],
+    "files": [
+      "classes/AdminDataService.cls",
+      "permissionsets/Batch_Sync_Admin.permissionset-meta.xml"
     ]
   },
   {
@@ -170,6 +438,96 @@
     ]
   },
   {
+    "scenario_id": "C4-V02",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "permission set userPermissions",
+    "explanation": "The Apex code is correct and properly enforces FLS and sharing. The vulnerability is entirely in the permission set: it grants ManageInternalUsers to accounts payable clerks whose job is only to review and approve invoices. ManageInternalUsers allows creating, editing and deactivating internal Salesforce users — an administrative capability completely unrelated to invoice approval. Any clerk assigned this permission set gains privileged user management access.",
+    "expected_remediation": [
+      "Remove the ManageInternalUsers userPermission from the permission set",
+      "Grant only the minimum permissions needed: Invoice__c read/edit and class access"
+    ],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "Salesforce Help - Security Health Check / least privilege",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/InvoiceApprovalController.cls",
+      "permissionsets/Accounts_Payable_Clerk.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): ManageInternalUsers grants full user administration to a non-admin role. High = escalation path to user account takeover or privilege escalation across the org."
+  },
+  {
+    "scenario_id": "C4-V03",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "permission set userPermissions",
+    "explanation": "The Apex code is correct. The vulnerability is buried in the permission set among four objectPermissions entries: a ViewAllData userPermission is granted alongside RunReports and ExportReport. ViewAllData is a system-wide permission that grants read access to every record in the org, overriding all sharing rules and object permissions. The legitimate-looking objectPermissions list (Account, Opportunity, Lead, Contact read-only) makes ViewAllData easy to overlook during review.",
+    "expected_remediation": [
+      "Remove the ViewAllData userPermission from the permission set",
+      "If org-wide report data is required, consider a dedicated system integration user rather than granting ViewAllData to human users"
+    ],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "Salesforce Help - Security Health Check / least privilege",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/ReportExportService.cls",
+      "permissionsets/Report_Viewer_Plus.permissionset-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): ViewAllData grants org-wide unrestricted read access, completely overriding all sharing rules. High = every record in the org readable by any user assigned this permission set."
+  },
+  {
+    "scenario_id": "C4-S02",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the permission set grants RunReports and ExportReport, which can look alarming because analysts could export report data. However, these permissions only allow running and exporting reports the user already has access to — they do not grant access to data beyond what sharing and object permissions allow. There is no ViewAllData, ModifyAllData, or other system-wide permission. The object permissions are limited to Order read-only. This is a correctly scoped, least-privilege billing analyst setup.",
+    "expected_remediation": [],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "Salesforce Help - Security Health Check / least privilege",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/BillingReportController.cls",
+      "permissionsets/Billing_Analyst.permissionset-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C4-S03",
+    "category": "C4",
+    "category_name": "Excessive permissions",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the permission set grants ApiEnabled, which allows API access to Salesforce. This can look like a broad system permission. However, ApiEnabled alone only allows the user to authenticate via the Salesforce API — it does not grant access to any additional data or records beyond what the user's object permissions and sharing rules already permit. The permission set is scoped to Order read/write only, with no system-wide permissions. This is a correct, least-privilege integration user configuration.",
+    "expected_remediation": [],
+    "sources": [
+      "Metadata API Developer Guide - PermissionSet",
+      "Salesforce Help - Security Health Check / least privilege",
+      "CWE-250"
+    ],
+    "files": [
+      "classes/IntegrationApiService.cls",
+      "permissionsets/Integration_Api_User.permissionset-meta.xml"
+    ]
+  },
+  {
     "scenario_id": "C5-V01",
     "category": "C5",
     "category_name": "Guest user / Experience Cloud exposure",
@@ -210,6 +568,95 @@
     "files": [
       "classes/PublicCatalogController.cls",
       "profiles/Catalog Site Profile.profile-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C5-V02",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "medium",
+    "label": "vulnerable",
+    "severity": "High",
+    "lines": "guest profile objectPermissions (Case)",
+    "explanation": "The KnowledgeSearchController itself is well-written: it uses 'with sharing', WITH USER_MODE, and escapeSingleQuotes. However, the guest profile grants read access to the Case object alongside KnowledgeArticleVersion. Case records contain potentially sensitive customer support data. Any unauthenticated visitor can read Cases through any existing or future Apex endpoint that queries them, or through the Salesforce REST API if guest API access is enabled. The controller code is not the problem — the misconfigured profile is.",
+    "expected_remediation": [
+      "Remove Case read access from the guest profile",
+      "Audit all objects in the guest profile and remove any that are not required by the site's intended public functionality"
+    ],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "Salesforce Help - Control Which Users Experience Cloud Site Guest Users Can Access",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/KnowledgeSearchController.cls",
+      "profiles/Help Centre Guest Profile.profile-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): Guest profile grants Case read to unauthenticated users. High = customer support records accessible to anonymous visitors without any authentication."
+  },
+  {
+    "scenario_id": "C5-V03",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "hard",
+    "label": "vulnerable",
+    "severity": "Medium",
+    "lines": "5-12 + guest profile objectPermissions",
+    "explanation": "Unauthenticated visitors can call registerForEvent() to insert EventRegistration__c records. The class runs with sharing and the DML uses system mode, but neither protects against abuse: there is no input validation on the email format (enabling injection of arbitrary strings), no rate limiting and no CAPTCHA, so attackers can flood the registrations table or enumerate valid event IDs at no cost. The guest profile grants EventRegistration__c create without restriction. This is an abuse-of-function vulnerability rather than a data-access violation.",
+    "expected_remediation": [
+      "Add email format validation using a regex pattern before insert",
+      "Implement rate limiting (e.g. check registration count per guest IP or session within a time window) or require a CAPTCHA token verified server-side",
+      "Consider requiring authentication for event registration, or scope guest create access to specific event types"
+    ],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "OWASP - Unrestricted Resource Consumption",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/EventRegistrationController.cls",
+      "profiles/Events Site Guest Profile.profile-meta.xml"
+    ],
+    "severity_original": "High",
+    "severity_rationale": "Severity criteria v1 (10 Nov 2026): Guest create with no validation or rate limiting enables spam/DoS on the registrations table. Medium = abuse risk but no sensitive data read; impact is data pollution and service degradation."
+  },
+  {
+    "scenario_id": "C5-S02",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "medium",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Secure: the guest profile grants read access only to Job_Listing__c, a purpose-built non-sensitive object for public job advertisements. No PII or sensitive business data is involved. The class uses 'with sharing' and WITH USER_MODE. The department filter uses a bind variable. Unauthenticated access to public job listings is an intentional, legitimate use of Experience Cloud guest access.",
+    "expected_remediation": [],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/JobListingController.cls",
+      "profiles/Careers Site Guest Profile.profile-meta.xml"
+    ]
+  },
+  {
+    "scenario_id": "C5-S03",
+    "category": "C5",
+    "category_name": "Guest user / Experience Cloud exposure",
+    "difficulty": "hard",
+    "label": "secure",
+    "severity": "None",
+    "lines": "",
+    "explanation": "Tricky secure: the guest profile grants Store__c read access, and Store__c has a sensitive Internal_Notes__c field. This looks like a potential data-leakage risk. However, the Apex query explicitly selects only public fields (Name__c, Street__c, City__c, Phone__c, Opening_Hours__c) and excludes Internal_Notes__c. WITH USER_MODE would strip any field the guest profile's FLS denies in any case. No PII or sensitive data is returned. Guest access to public store information is intentional and correct.",
+    "expected_remediation": [],
+    "sources": [
+      "Salesforce Help - Guest User Security / Experience Cloud",
+      "CWE-306"
+    ],
+    "files": [
+      "classes/StoreLocatorController.cls",
+      "profiles/Store Locator Guest Profile.profile-meta.xml"
     ]
   }
 ]

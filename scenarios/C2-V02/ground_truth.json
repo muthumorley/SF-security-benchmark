@@ -1,0 +1,26 @@
+{
+  "scenario_id": "C2-V02",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "medium",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "4-9",
+  "explanation": "The query runs in system mode (no WITH USER_MODE) and reads AnnualRevenue, a field explicitly hidden from this permission set. The subsequent update runs without USER_MODE or 'update as user', so Rating is written without checking field-level edit permission. Any user with this permission set can trigger the class and implicitly read AnnualRevenue (used as the decision signal) and write Rating — both bypassing FLS.",
+  "expected_remediation": [
+    "Add WITH USER_MODE to the SOQL query so FLS is enforced on AnnualRevenue",
+    "Replace 'update acc' with 'update as user acc' to enforce field edit permissions",
+    "Or apply Security.stripInaccessible(AccessType.READABLE, ...) before reading and Security.stripInaccessible(AccessType.UPDATABLE, ...) before DML"
+  ],
+  "sources": [
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "Secure Coding Guide - CRUD and FLS",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/AccountRatingService.cls",
+    "permissionsets/Account_Rating_Editor.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): FLS bypassed on both read (AnnualRevenue) and write (Rating). Class runs with sharing, so record scope is limited. Medium = data-access violation within the user's own record set."
+}

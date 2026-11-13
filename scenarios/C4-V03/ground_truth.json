@@ -1,0 +1,25 @@
+{
+  "scenario_id": "C4-V03",
+  "category": "C4",
+  "category_name": "Excessive permissions",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "permission set userPermissions",
+  "explanation": "The Apex code is correct. The vulnerability is buried in the permission set among four objectPermissions entries: a ViewAllData userPermission is granted alongside RunReports and ExportReport. ViewAllData is a system-wide permission that grants read access to every record in the org, overriding all sharing rules and object permissions. The legitimate-looking objectPermissions list (Account, Opportunity, Lead, Contact read-only) makes ViewAllData easy to overlook during review.",
+  "expected_remediation": [
+    "Remove the ViewAllData userPermission from the permission set",
+    "If org-wide report data is required, consider a dedicated system integration user rather than granting ViewAllData to human users"
+  ],
+  "sources": [
+    "Metadata API Developer Guide - PermissionSet",
+    "Salesforce Help - Security Health Check / least privilege",
+    "CWE-250"
+  ],
+  "files": [
+    "classes/ReportExportService.cls",
+    "permissionsets/Report_Viewer_Plus.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): ViewAllData grants org-wide unrestricted read access, completely overriding all sharing rules. High = every record in the org readable by any user assigned this permission set."
+}

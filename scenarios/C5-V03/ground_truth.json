@@ -1,0 +1,26 @@
+{
+  "scenario_id": "C5-V03",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "Medium",
+  "lines": "5-12 + guest profile objectPermissions",
+  "explanation": "Unauthenticated visitors can call registerForEvent() to insert EventRegistration__c records. The class runs with sharing and the DML uses system mode, but neither protects against abuse: there is no input validation on the email format (enabling injection of arbitrary strings), no rate limiting and no CAPTCHA, so attackers can flood the registrations table or enumerate valid event IDs at no cost. The guest profile grants EventRegistration__c create without restriction. This is an abuse-of-function vulnerability rather than a data-access violation.",
+  "expected_remediation": [
+    "Add email format validation using a regex pattern before insert",
+    "Implement rate limiting (e.g. check registration count per guest IP or session within a time window) or require a CAPTCHA token verified server-side",
+    "Consider requiring authentication for event registration, or scope guest create access to specific event types"
+  ],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "OWASP - Unrestricted Resource Consumption",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/EventRegistrationController.cls",
+    "profiles/Events Site Guest Profile.profile-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): Guest create with no validation or rate limiting enables spam/DoS on the registrations table. Medium = abuse risk but no sensitive data read; impact is data pollution and service degradation."
+}

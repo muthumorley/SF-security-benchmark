@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C5-S02",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Secure: the guest profile grants read access only to Job_Listing__c, a purpose-built non-sensitive object for public job advertisements. No PII or sensitive business data is involved. The class uses 'with sharing' and WITH USER_MODE. The department filter uses a bind variable. Unauthenticated access to public job listings is an intentional, legitimate use of Experience Cloud guest access.",
+  "expected_remediation": [],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/JobListingController.cls",
+    "profiles/Careers Site Guest Profile.profile-meta.xml"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C1-S03",
+  "category": "C1",
+  "category_name": "SOQL/SOSL injection",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the query is built by string concatenation and the value is embedded in a quoted LIKE clause, which looks injection-prone. However, String.escapeSingleQuotes() is applied before concatenation, neutralising any quote-based injection attempts. WITH USER_MODE enforces CRUD, FLS and sharing. This is not the preferred pattern (bind variables are recommended), but it is correctly mitigated.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - SOQL Injection",
+    "Apex Developer Guide - String.escapeSingleQuotes",
+    "CWE-89"
+  ],
+  "files": [
+    "classes/TaskSearchController.cls",
+    "permissionsets/Task_Search_User.permissionset-meta.xml"
+  ]
+}

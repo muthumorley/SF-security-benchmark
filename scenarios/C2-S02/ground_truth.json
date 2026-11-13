@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C2-S02",
+  "category": "C2",
+  "category_name": "CRUD/FLS violations",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the query fetches Legal_Notes__c, a sensitive custom field restricted from most users. This looks like a FLS violation. However, Security.stripInaccessible(AccessType.READABLE, records) is applied before the records are returned, removing any fields the running user cannot read (including Legal_Notes__c). The DML uses 'update as user', enforcing field edit permissions. With sharing ensures record-level scoping.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Security.stripInaccessible",
+    "Apex Developer Guide - Enforce User Mode for Database Operations",
+    "CWE-862"
+  ],
+  "files": [
+    "classes/ContractAmendmentService.cls",
+    "permissionsets/Contract_Amendment_Editor.permissionset-meta.xml"
+  ]
+}

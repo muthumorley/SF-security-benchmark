@@ -1,0 +1,24 @@
+{
+  "scenario_id": "C3-V03",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "hard",
+  "label": "vulnerable",
+  "severity": "High",
+  "lines": "1, 8-11",
+  "explanation": "The @AuraEnabled entry point getLeadSummary() lives on the outer class DataAggregator, which is declared 'without sharing'. The inner class SharedHelper is declared 'with sharing', which makes it appear that sharing is enforced. However, the entry point method never calls SharedHelper — it executes its own query directly in DataAggregator's context, which is 'without sharing'. The inner class's sharing keyword is irrelevant here. All leads org-wide are returned, bypassing record sharing.",
+  "expected_remediation": [
+    "Change DataAggregator from 'without sharing' to 'with sharing' or 'inherited sharing'",
+    "Or delegate the query to SharedHelper.getMyLeads() so the with-sharing context is actually used"
+  ],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/DataAggregator.cls",
+    "permissionsets/Lead_Summary_Viewer.permissionset-meta.xml"
+  ],
+  "severity_original": "High",
+  "severity_rationale": "Severity criteria v1 (10 Nov 2026): Sharing bypassed at AuraEnabled entry point. The with-sharing inner class is a red herring — the entry-point method does not use it. High = all Lead records accessible regardless of sharing rules."
+}

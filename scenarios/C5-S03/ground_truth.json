@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C5-S03",
+  "category": "C5",
+  "category_name": "Guest user / Experience Cloud exposure",
+  "difficulty": "hard",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the guest profile grants Store__c read access, and Store__c has a sensitive Internal_Notes__c field. This looks like a potential data-leakage risk. However, the Apex query explicitly selects only public fields (Name__c, Street__c, City__c, Phone__c, Opening_Hours__c) and excludes Internal_Notes__c. WITH USER_MODE would strip any field the guest profile's FLS denies in any case. No PII or sensitive data is returned. Guest access to public store information is intentional and correct.",
+  "expected_remediation": [],
+  "sources": [
+    "Salesforce Help - Guest User Security / Experience Cloud",
+    "CWE-306"
+  ],
+  "files": [
+    "classes/StoreLocatorController.cls",
+    "profiles/Store Locator Guest Profile.profile-meta.xml"
+  ]
+}

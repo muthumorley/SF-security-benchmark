@@ -1,0 +1,19 @@
+{
+  "scenario_id": "C3-S02",
+  "category": "C3",
+  "category_name": "Sharing / security context",
+  "difficulty": "hard",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the class uses 'inherited sharing', which looks like it might not enforce sharing rules. However, when an 'inherited sharing' class is called as an @AuraEnabled entry point from an LWC, Salesforce treats it as 'with sharing' because there is no outer caller to inherit from — the implicit default is enforced sharing. Additionally, WITH USER_MODE enforces CRUD and FLS. This is a correct and recommended pattern for reusable service classes.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - Using the with sharing, without sharing, and inherited sharing Keywords",
+    "CWE-284"
+  ],
+  "files": [
+    "classes/AccountManagerView.cls",
+    "permissionsets/Account_Manager_Viewer.permissionset-meta.xml"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C1-S02",
+  "category": "C1",
+  "category_name": "SOQL/SOSL injection",
+  "difficulty": "medium",
+  "label": "secure",
+  "severity": "None",
+  "lines": "",
+  "explanation": "Tricky secure: the query is built dynamically and an ORDER BY clause is concatenated from user input, which looks dangerous. However, sortField is validated against a strict allow-list (ALLOWED_SORT_FIELDS) before concatenation, and the nameFilter value is passed as a bind variable via queryWithBinds rather than concatenated. USER_MODE enforces CRUD, FLS and sharing. No injection path exists.",
+  "expected_remediation": [],
+  "sources": [
+    "Apex Developer Guide - SOQL Injection",
+    "Apex Developer Guide - Database.queryWithBinds",
+    "CWE-89"
+  ],
+  "files": [
+    "classes/ProductSearchController.cls",
+    "permissionsets/Product_Search_User.permissionset-meta.xml"
+  ]
+}
