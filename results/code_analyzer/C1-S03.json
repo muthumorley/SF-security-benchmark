@@ -1,0 +1,43 @@
+{
+  "runDir": "/Users/muthukumar/Documents/sf-security-benchmark/",
+  "violationCounts": {
+    "total": 1,
+    "sev1": 0,
+    "sev2": 1,
+    "sev3": 0,
+    "sev4": 0,
+    "sev5": 0
+  },
+  "versions": {
+    "code-analyzer": "0.53.0",
+    "regex": "0.40.0",
+    "pmd": "0.46.0",
+    "sfge": "0.25.0"
+  },
+  "violations": [
+    {
+      "rule": "ApexSOQLInjection",
+      "engine": "pmd",
+      "severity": 2,
+      "tags": [
+        "Recommended",
+        "Security",
+        "Apex"
+      ],
+      "primaryLocationIndex": 0,
+      "locations": [
+        {
+          "file": "scenarios/C1-S03/force-app/main/default/classes/TaskSearchController.cls",
+          "startLine": 8,
+          "startColumn": 31,
+          "endLine": 8,
+          "endColumn": 36
+        }
+      ],
+      "message": "Avoid untrusted/unescaped variables in DML query",
+      "resources": [
+        "https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_apex_security.html#apexsoqlinjection"
+      ]
+    }
+  ]
+}

@@ -1,35 +1,40 @@
 {
   "name": "ollama_qwen3-coder_30b__D__rep1",
-  "TP": 5,
-  "FP": 2,
-  "FN": 0,
-  "TN": 3,
-  "precision": 0.714,
-  "recall": 1.0,
-  "f1": 0.833,
+  "TP": 14,
+  "FP": 5,
+  "FN": 1,
+  "TN": 10,
+  "precision": 0.737,
+  "recall": 0.933,
+  "f1": 0.824,
   "accuracy": 0.8,
   "category_accuracy_on_TP": 1.0,
-  "severity_accuracy_on_TP": 0.6,
+  "severity_accuracy_on_TP": 0.5,
   "per_category": {
     "C1": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 3
     },
     "C2": {
-      "TP": 1,
-      "FP": 1
+      "TP": 3,
+      "FP": 2,
+      "TN": 1
     },
     "C3": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 2,
+      "FP": 1
     },
     "C4": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 2,
+      "FP": 1
     },
     "C5": {
-      "TP": 1,
-      "FP": 1
+      "TP": 2,
+      "FP": 1,
+      "FN": 1,
+      "TN": 2
     }
   },
   "outputs_repaired": 0,

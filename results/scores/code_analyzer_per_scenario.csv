@@ -1,11 +1,31 @@
 scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
 C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,ApexSOQLInjection@L6
 C1-S01,secure,C1,None,False,,None,TN,,,
+C1-V02,vulnerable,C1,Medium,False,,None,FN,,,
+C1-V03,vulnerable,C1,Medium,False,,None,FN,,,
+C1-S02,secure,C1,None,False,,None,TN,,,
+C1-S03,secure,C1,None,True,C1,High,FP,,,ApexSOQLInjection@L8
 C2-V01,vulnerable,C2,Medium,True,C2,High,TP,True,False,ApexCRUDViolation@L4; ApexCRUDViolation@L6; ApexFlsViolation@L4; ApexFlsViolation@L6
 C2-S01,secure,C2,None,False,,None,TN,,,
+C2-V02,vulnerable,C2,Medium,True,C2,High,TP,True,False,ApexFlsViolation@L6; ApexFlsViolation@L12; ApexCRUDViolation@L6; ApexCRUDViolation@L12
+C2-V03,vulnerable,C2,Medium,True,C2,High,TP,True,False,ApexCRUDViolation@L17; ApexFlsViolation@L17
+C2-S02,secure,C2,None,True,C2,High,FP,,,ApexCRUDViolation@L4; ApexFlsViolation@L4
+C2-S03,secure,C2,None,False,,None,TN,,,
 C3-V01,vulnerable,C3,High,True,C2 C3,High,TP,True,True,ApexFlsViolation@L7; DatabaseOperationsMustUseWithSharing@L7
 C3-S01,secure,C3,None,False,,None,TN,,,
+C3-V02,vulnerable,C3,High,True,C3,High,TP,True,True,DatabaseOperationsMustUseWithSharing@L7
+C3-V03,vulnerable,C3,High,True,C3,High,TP,True,True,DatabaseOperationsMustUseWithSharing@L16
+C3-S02,secure,C3,None,False,,None,TN,,,
+C3-S03,secure,C3,None,True,C2,High,FP,,,ApexCRUDViolation@L9
 C4-V01,vulnerable,C4,High,False,,None,FN,,,
 C4-S01,secure,C4,None,False,,None,TN,,,
+C4-V02,vulnerable,C4,High,False,,None,FN,,,
+C4-V03,vulnerable,C4,High,False,,None,FN,,,
+C4-S02,secure,C4,None,False,,None,TN,,,
+C4-S03,secure,C4,None,False,,None,TN,,,
 C5-V01,vulnerable,C5,High,True,C2 C3,High,TP,False,True,ApexCRUDViolation@L4; ApexFlsViolation@L4; DatabaseOperationsMustUseWithSharing@L4
 C5-S01,secure,C5,None,False,,None,TN,,,
+C5-V02,vulnerable,C5,High,False,,None,FN,,,
+C5-V03,vulnerable,C5,Medium,True,C2,High,TP,False,False,ApexCRUDViolation@L11; ApexFlsViolation@L11
+C5-S02,secure,C5,None,False,,None,TN,,,
+C5-S03,secure,C5,None,False,,None,TN,,,

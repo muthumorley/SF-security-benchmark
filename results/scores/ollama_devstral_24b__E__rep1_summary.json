@@ -1,35 +1,39 @@
 {
   "name": "ollama_devstral_24b__E__rep1",
-  "TP": 5,
-  "FP": 1,
+  "TP": 15,
+  "FP": 10,
   "FN": 0,
-  "TN": 4,
-  "precision": 0.833,
+  "TN": 5,
+  "precision": 0.6,
   "recall": 1.0,
-  "f1": 0.909,
-  "accuracy": 0.9,
+  "f1": 0.75,
+  "accuracy": 0.667,
   "category_accuracy_on_TP": 1.0,
-  "severity_accuracy_on_TP": 0.6,
+  "severity_accuracy_on_TP": 0.467,
   "per_category": {
     "C1": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 2,
+      "FP": 1
     },
     "C2": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 1,
+      "FP": 2
     },
     "C3": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 1,
+      "FP": 2
     },
     "C4": {
-      "TP": 1,
-      "TN": 1
+      "TP": 3,
+      "TN": 1,
+      "FP": 2
     },
     "C5": {
-      "TP": 1,
-      "FP": 1
+      "TP": 3,
+      "FP": 3
     }
   },
   "outputs_repaired": 0,

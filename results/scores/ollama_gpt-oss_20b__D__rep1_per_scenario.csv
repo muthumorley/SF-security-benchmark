@@ -1,11 +1,31 @@
 scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
-C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,[REPAIRED] SOQL Injection in Account Search
+C1-V01,vulnerable,C1,Medium,True,C1,High,TP,True,False,SOQL Injection via Dynamic Query
 C1-S01,secure,C1,None,False,,None,TN,,,
-C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,CRUD/FLS Violation in ContactPhoneService
+C1-V02,vulnerable,C1,Medium,True,C2,Medium,TP,False,True,Missing FLS enforcement on SOSL query
+C1-V03,vulnerable,C1,Medium,True,C1,High,TP,True,False,SOQL Injection via dynamic query
+C1-S02,secure,C1,None,False,,None,TN,,,
+C1-S03,secure,C1,None,False,,None,TN,,,
+C2-V01,vulnerable,C2,Medium,False,,None,FN,,,
 C2-S01,secure,C2,None,False,,None,TN,,,
+C2-V02,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,Field-Level Security bypass
+C2-V03,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,Unenforced Task Creation FLS Violation
+C2-S02,secure,C2,None,False,,None,TN,,,
+C2-S03,secure,C2,None,False,,None,TN,,,
 C3-V01,vulnerable,C3,High,True,C3,Medium,TP,True,False,Record-level sharing bypass in Aura-enabled class
 C3-S01,secure,C3,None,False,,None,TN,,,
-C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive permissions in Support Agent Tools permission set
+C3-V02,vulnerable,C3,High,True,C3,High,TP,True,True,Record-level sharing bypass
+C3-V03,vulnerable,C3,High,True,C3,High,TP,True,True,Record-level sharing bypass in DataAggregator
+C3-S02,secure,C3,None,False,,None,TN,,,
+C3-S03,secure,C3,None,False,,None,TN,,,
+C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive Permissions in Support Agent Tools Permission Set
 C4-S01,secure,C4,None,False,,None,TN,,,
-C5-V01,vulnerable,C5,High,True,C2 C3 C5,High,TP,True,True,"Guest user can access Contact data via AuraEnabled method; Class runs without sharing, ignoring record-level access; Query selects fields without enforcing field-level security"
+C4-V02,vulnerable,C4,High,True,C4,Medium,TP,True,False,Excessive Permission Set Privileges
+C4-V03,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive ViewAllData permission
+C4-S02,secure,C4,None,False,,None,TN,,,
+C4-S03,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,False,,None,FN,,,[INVALID] 
 C5-S01,secure,C5,None,False,,None,TN,,,
+C5-V02,vulnerable,C5,High,False,,None,FN,,,[INVALID] 
+C5-V03,vulnerable,C5,Medium,False,,None,FN,,,
+C5-S02,secure,C5,None,False,,None,TN,,,
+C5-S03,secure,C5,None,False,,None,TN,,,

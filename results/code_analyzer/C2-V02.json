@@ -1,0 +1,121 @@
+{
+  "runDir": "/Users/muthukumar/Documents/sf-security-benchmark/",
+  "violationCounts": {
+    "total": 4,
+    "sev1": 0,
+    "sev2": 4,
+    "sev3": 0,
+    "sev4": 0,
+    "sev5": 0
+  },
+  "versions": {
+    "code-analyzer": "0.53.0",
+    "regex": "0.40.0",
+    "sfge": "0.25.0",
+    "pmd": "0.46.0"
+  },
+  "violations": [
+    {
+      "rule": "ApexFlsViolation",
+      "engine": "sfge",
+      "severity": 2,
+      "tags": [
+        "DevPreview",
+        "Security",
+        "Apex"
+      ],
+      "primaryLocationIndex": 1,
+      "locations": [
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 3,
+          "startColumn": 24
+        },
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 6,
+          "startColumn": 23
+        }
+      ],
+      "message": "FLS validation is missing for [READ] operation on [Account] with field(s) [AnnualRevenue,Rating].",
+      "resources": [
+        "https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/rules-sfge.html#apexflsviolation"
+      ]
+    },
+    {
+      "rule": "ApexFlsViolation",
+      "engine": "sfge",
+      "severity": 2,
+      "tags": [
+        "DevPreview",
+        "Security",
+        "Apex"
+      ],
+      "primaryLocationIndex": 1,
+      "locations": [
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 3,
+          "startColumn": 24
+        },
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 12,
+          "startColumn": 9
+        }
+      ],
+      "message": "FLS validation is missing for [UPDATE] operation on [Account] with field(s) [AnnualRevenue,Rating].",
+      "resources": [
+        "https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/rules-sfge.html#apexflsviolation"
+      ]
+    },
+    {
+      "rule": "ApexCRUDViolation",
+      "engine": "pmd",
+      "severity": 2,
+      "tags": [
+        "Recommended",
+        "Security",
+        "Apex"
+      ],
+      "primaryLocationIndex": 0,
+      "locations": [
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 6,
+          "startColumn": 23,
+          "endLine": 6,
+          "endColumn": 92
+        }
+      ],
+      "message": "Validate CRUD permission before SOQL/DML operation or enforce user mode",
+      "resources": [
+        "https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_apex_security.html#apexcrudviolation"
+      ]
+    },
+    {
+      "rule": "ApexCRUDViolation",
+      "engine": "pmd",
+      "severity": 2,
+      "tags": [
+        "Recommended",
+        "Security",
+        "Apex"
+      ],
+      "primaryLocationIndex": 0,
+      "locations": [
+        {
+          "file": "scenarios/C2-V02/force-app/main/default/classes/AccountRatingService.cls",
+          "startLine": 12,
+          "startColumn": 9,
+          "endLine": 12,
+          "endColumn": 20
+        }
+      ],
+      "message": "Validate CRUD permission before SOQL/DML operation or enforce user mode",
+      "resources": [
+        "https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_apex_security.html#apexcrudviolation"
+      ]
+    }
+  ]
+}
