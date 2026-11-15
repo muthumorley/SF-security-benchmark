@@ -1,11 +1,31 @@
 scenario_id,truth_label,truth_category,truth_severity,predicted_vulnerable,predicted_categories,predicted_severity,outcome,category_correct,severity_correct,detail
-C1-V01,vulnerable,C1,Medium,True,C1 C2,High,TP,True,False,SOQL Injection; CRUD/FLS Violation
+C1-V01,vulnerable,C1,Medium,True,C1 C2,Medium,TP,True,True,SOQL Injection; CRUD/FLS Violation
 C1-S01,secure,C1,None,False,,None,TN,,,
+C1-V02,vulnerable,C1,Medium,True,C1 C2,Medium,TP,True,True,SOSL injection; CRUD/FLS violation
+C1-V03,vulnerable,C1,Medium,True,C1 C2,High,TP,True,False,SOQL injection; CRUD/FLS violation
+C1-S02,secure,C1,None,False,,None,TN,,,
+C1-S03,secure,C1,None,True,C1,Medium,FP,,,SOQL Injection
 C2-V01,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,CRUD/FLS violation
 C2-S01,secure,C2,None,False,,None,TN,,,
-C3-V01,vulnerable,C3,High,True,C2 C3,Medium,TP,True,False,Sharing not enforced; CRUD/FLS not enforced
+C2-V02,vulnerable,C2,Medium,True,C2,Medium,TP,True,True,CRUD/FLS violation
+C2-V03,vulnerable,C2,Medium,True,C2 C4,Medium,TP,True,True,FLS violation; Excessive permissions
+C2-S02,secure,C2,None,True,C2,Medium,FP,,,CRUD/FLS Violation; CRUD/FLS Violation
+C2-S03,secure,C2,None,True,C2 C4,Medium,FP,,,CRUD/FLS Violation; Excessive Permissions
+C3-V01,vulnerable,C3,High,True,C2 C3,Medium,TP,True,False,Missing sharing declaration; Missing WITH USER_MODE
 C3-S01,secure,C3,None,False,,None,TN,,,
+C3-V02,vulnerable,C3,High,True,C3,Medium,TP,True,False,Sharing violation
+C3-V03,vulnerable,C3,High,True,C3,Medium,TP,True,False,Sharing violation
+C3-S02,secure,C3,None,False,,None,TN,,,
+C3-S03,secure,C3,None,True,C2 C4,Medium,FP,,,CRUD/FLS Violation; Excessive Permissions
 C4-V01,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive Permissions
 C4-S01,secure,C4,None,False,,None,TN,,,
-C5-V01,vulnerable,C5,High,True,C3 C5,High,TP,True,True,Sharing not enforced; USER_MODE not enforced; Guest user exposure
-C5-S01,secure,C5,None,True,C2 C5,High,FP,,,Guest user exposure; CRUD/FLS violation
+C4-V02,vulnerable,C4,High,True,C4,Medium,TP,True,False,Excessive Permission
+C4-V03,vulnerable,C4,High,True,C4,High,TP,True,True,Excessive Permissions
+C4-S02,secure,C4,None,False,,None,TN,,,
+C4-S03,secure,C4,None,False,,None,TN,,,
+C5-V01,vulnerable,C5,High,True,C2 C3 C5,High,TP,True,True,Sharing not enforced; CRUD/FLS not enforced; Guest user exposure
+C5-S01,secure,C5,None,True,C3 C5,High,FP,,,Guest user exposure; Sharing not enforced
+C5-V02,vulnerable,C5,High,True,C5,High,TP,True,True,Guest user exposure
+C5-V03,vulnerable,C5,Medium,True,C2 C5,High,TP,True,False,Guest user exposure; CRUD/FLS violation
+C5-S02,secure,C5,None,True,C3 C5,High,FP,,,Guest user exposure; Sharing not enforced
+C5-S03,secure,C5,None,True,C2 C5,High,FP,,,Guest user exposure; CRUD/FLS violation
