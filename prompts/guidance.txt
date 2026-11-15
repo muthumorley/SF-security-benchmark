@@ -9,3 +9,9 @@ Sharing (CWE-284): a class declared "without sharing" ignores record-level shari
 Excessive permissions (CWE-250): permission sets and profiles should follow least privilege. Modify All Data, View All Data, Author Apex, Customize Application, Manage Users and API Enabled are powerful system permissions that should only be granted to administrators or integration users with a clear need. Compare the permissions granted with the stated purpose.
 
 Guest user exposure (CWE-306): a profile with "Guest User License" represents unauthenticated site visitors. Any Apex class in its classAccesses can be called by anyone on the internet through the site's Aura endpoint. Such classes must be "with sharing", enforce USER_MODE, return only data intended to be public, and guest object access should be limited to non-sensitive data.
+
+Severity criteria:
+- High: an unauthenticated or external user (e.g. a guest site visitor) can read or modify data they should not, or any authenticated user gains org-wide access beyond their role (e.g. via View All Data / Modify All Data), and no other control limits it.
+- Medium: a real flaw reachable only by authenticated internal users, limited in scope, or a High-type flaw that is partly contained by another control (e.g. WITH USER_MODE or "with sharing" reducing the blast radius).
+- Low: a best-practice gap with no direct data exposure (e.g. a missing sharing declaration on an internal utility with no sensitive data).
+- Tie-break: choose the level you can justify from the code and configuration alone; do not speculate about deployment context not visible in the files.
